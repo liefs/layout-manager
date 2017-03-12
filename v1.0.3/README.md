@@ -3,7 +3,7 @@
 ![alt text](http://liefs.paperplane.io/images/liefslogo256.png "Liefs Layout MAnager")
 
 
-## liefs-layout-manager has reached (Beta Stage)
+## liefs-layout-manager (Beta Stage)
 (see end of this doc for details)
 
 What's New? TONS of bugs fixed.
