@@ -86,7 +86,7 @@ usage:
     <meta charset="utf-8">
     <title>title</title>
     <script src="liefs-layout-manager.v1.0.3.min.js"></script> <!-- ~23Kb min version-->
-<!--<script src="liefs-layout-manager.v1.0.0.js"></script> --> <!-- ~80Kb full docs version -->
+<!--<script src="liefs-layout-manager.v1.0.3.js"></script> --> <!-- ~80Kb full docs version -->
 <!-- move these from ./node_modules/liefs-layout-manager/ to find a better home -->
   </head>
   <body>
