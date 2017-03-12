@@ -1,0 +1,25 @@
+{
+    "name": "liefs-layout-manager",
+    "version": "1.0.3",
+    "description": "Dynamic Layout Manager (Javascript)",
+    "author": "Stacy Lief Kelly <electriclief@gmail.com> (https://liefs.github.io/)",
+    "keywords": ["Layout", "Layout Manager", "control location",
+        "move element", "moves elements",
+        "leafs", "leifs", "leaf", "lief", "leif",
+        "leafs-layout-manager", "leifs-layout-manager"
+    ],
+    "homepage": "https://liefs.github.io/",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/liefs/layout-manager"
+    },
+    "bugs": {
+        "email": "electriclief@gmail.com"
+    },
+    "private": false,
+    "license": "ISC"
+}
