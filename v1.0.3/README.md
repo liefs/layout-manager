@@ -13,7 +13,7 @@ Liefs Layout Manager is best explained as follows:
 
 Note: Docs are in active Edit: Will progress over next week.
 
-Docs (One Big Live Example Too) - [https://liefs.github.io/currentVersion/index.html](https://liefs.github.io/currentVersion/index.html)
+Docs (One Big Live Example Too) - [https://liefs.github.io/currentVersion/index.html](https://liefs.github.io/currentVersion/index.html) (try sky button)
 
 Video Examples: - [https://youtu.be/M4At7GK3s50?list=PLxVJRwI2NGPXEapqhnEN-Px_IAx5UVxRk](https://youtu.be/M4At7GK3s50?list=PLxVJRwI2NGPXEapqhnEN-Px_IAx5UVxRk)
 
