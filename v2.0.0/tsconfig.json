@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        // "outFile" : "js/liefs-core.js",
+        "outDir" : "js",
+        "declaration" : true,        
+        "allowJs": false,
+        "target" : "es6",
+        "module" :"amd",
+    },
+    "files": [
+        "../liefs-global/ts/Interface.ts",
+        // "../liefs-args/ts/Args.ts",
+        "ts/Debug.ts",
+        // "../liefs-options/ts/Interface.ts",
+        // "../liefs-options/ts/Options.ts",
+        "ts/Interface.ts",
+        "ts/Arguments.ts",
+        "ts/Coord.ts",
+        "ts/Feature.ts",
+        "ts/Display.ts",
+        "ts/Element.ts",
+        "ts/Root.ts",
+        "ts/Item.ts",
+        "ts/Container.ts",
+        "ts/Mouse.ts",
+        // "ts/Dragbar.ts",
+        "ts/Page.ts",
+        "ts/Drop.ts",
+        "ts/Spawn.ts",
+        "ts/Modal.ts"
+
+    ]
+}
