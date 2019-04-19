@@ -48,9 +48,8 @@ class argsClass {
         for (let mapType in this.argsMap) {
             valueArray = this.argsMap[mapType];
             if (argsClass.TypeOf(valueArray) != "array") valueArray = [ valueArray ];
-            // console.log("ValueArray", valueArray);
             for (let i=0; i < valueArray.length; i++) 
-                if (mapType in this.typeObj && i < this.typeObj[type].length) {
+                if (mapType in this.typeObj && i < this.typeObj[mapType].length) {
                     this.returnObj[ valueArray[i] ] = this.typeObj[mapType][i];
                 }
         }

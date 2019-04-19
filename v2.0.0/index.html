@@ -16,61 +16,31 @@
 </style>
 <head>
         <!-- <script src="js/liefs-args/ts/Args.js"></script>  -->
-        <script src="js/liefs-core/ts/Arguments.js"></script>
-        <script src="js/liefs-core/ts/Display.js"></script>
-        <script src="js/liefs-core/ts/Feature.js"></script>        
-        <script src="js/liefs-core/ts/Container.js"></script>
-        <script src="js/liefs-core/ts/Coord.js"></script>
-        <script src="js/liefs-core/ts/Debug.js"></script>
-        <script src="js/liefs-core/ts/Mouse.js"></script>
-        <!-- <script src="js/liefs-core/ts/Dragbar.js"></script> -->
-        <script src="js/liefs-core/ts/Element.js"></script>
-        <script src="js/liefs-core/ts/Root.js"></script>
-        <script src="js/liefs-core/ts/Item.js"></script>
-        <script src="js/liefs-core/ts/Page.js"></script>
-        <script src="js/liefs-core/ts/Drop.js"></script>
-        <script src="js/liefs-core/ts/Spawn.js"></script>
-        <script src="js/liefs-core/ts/Modal.js"></script>
+        <script src="js/Arguments.js"></script>
+        <script src="js/Display.js"></script>
+        <script src="js/Feature.js"></script>        
+        <script src="js/Container.js"></script>
+        <script src="js/Coord.js"></script>
+        <script src="js/Debug.js"></script>
+        <script src="js/Mouse.js"></script>
+        <!-- <script src="js/Dragbar.js"></script> -->
+        <script src="js/Element.js"></script>
+        <script src="js/Root.js"></script>
+        <script src="js/Item.js"></script>
+        <script src="js/Page.js"></script>
+        <script src="js/Drop.js"></script>
+        <script src="js/Spawn.js"></script>
+        <script src="js/Modal.js"></script>
 </head>
 <body style="overflow: hidden;" >
-<!-- 
-<div id="left" style="background-color: lightblue;overflow: hidden;">LEFT</div>
--->
+
 </body>
 </html>
 <script>
-    var menuObj = {
-        one:function(){console.log("one")},
-        // two:function(){console.log("two")},
-        // three:function(){console.log("three")},
-        // four:function(){console.log("four")},
-        // more:[function(){console.log("MORE!")},
-        // {
-            // five:function(){console.log("five")},
-            // six:function(){console.log("six")},
-            // seven:function(){console.log("seven")},
-            // eight:function(){console.log("eight")},
-        // }],
-    }    
-    H(0,"mainHandler",
-        v(0, "Vert",
-            h(0, "TopLine", "20px",
-                I("Space0","","blackback","8px"),
-                //I({label:"space0", innerHTML:"", dim:"8px", class:"blackback"}),
-                I({label:"File", innerHTML:"File", dim:"50px", class:"blackpoint"}),
-                I({label:"View", innerHTML:"View", dim:"50px",  class:"blackpoint"},),
-                I({label:"space", innerHTML:"", class:"blackback"})
-            ),
-            I("MainWndow", "MainWindow")
-        )
+H("Main", 0, 
+    h("Hleft",
+        I("left","left", 200),
+        I("right","right"),
     )
-    // I("left", 100,100,100,100,
-    //     drop(menuObj,{width:80, height:20}),
-    //     // M({
-    //     //     click: function(){console.log("Clicked");},
-    //     //     dragdown: function(e) {console.log("Drag Started");},
-    //     //     dragmove: function(e) {console.log(e.deltaX, e.deltaY);},
-    //     //     dragup: function(e) {console.log("up");}
-    //     // })
-    // );
+)
 </script>

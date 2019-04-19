@@ -8,11 +8,7 @@
         "module" :"amd",
     },
     "files": [
-        "../liefs-global/ts/Interface.ts",
-        // "../liefs-args/ts/Args.ts",
         "ts/Debug.ts",
-        // "../liefs-options/ts/Interface.ts",
-        // "../liefs-options/ts/Options.ts",
         "ts/Interface.ts",
         "ts/Arguments.ts",
         "ts/Coord.ts",
@@ -28,6 +24,5 @@
         "ts/Drop.ts",
         "ts/Spawn.ts",
         "ts/Modal.ts"
-
     ]
 }
