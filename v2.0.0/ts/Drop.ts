@@ -163,7 +163,8 @@ class dropFeature extends Feature {
     set VISIBLE(value:boolean) {
         // debugger;
         this.o.container.visible = value;
-        console.log("HERE", value)}
+        // console.log("HERE", value)}
+    }
     mouseUP(retObj:mouseReturnObject) {
         // let DROP = <dropFeature>Display.feature(retObj.display, "dropFeature");
         // if (DROP.o.container) setTimeout(() => {DROP.VISIBLE = false;console.log("badguy")}, 0);
@@ -185,7 +186,7 @@ class dropFeature extends Feature {
                 }
             }  else {
                 if(!DROP.o.container.o.size.isPointIn(e.clientX, e.clientY)){
-                    console.log("MouseOut");
+                    // console.log("MouseOut");
                     DROP.VISIBLE = false;
                     dropFeature.activeDrops = dropFeature.activeDrops.slice(0, -1);
                 }
@@ -194,7 +195,7 @@ class dropFeature extends Feature {
     }
 
     static popDrops(){
-        console.log("popDrops");
+        // console.log("popDrops");
         for(let i=dropFeature.activeDrops.length-1; i>=0; i--)
             dropFeature.activeDrops[i].VISIBLE = false;
         dropFeature.activeDrops = [];
