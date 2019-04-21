@@ -160,10 +160,13 @@ class dropFeature extends Feature {
     }
     update():void {}
     get VISIBLE(){return this.o.container.visible;}
-    set VISIBLE(value:boolean) {this.o.container.visible = value;}
+    set VISIBLE(value:boolean) {
+        // debugger;
+        this.o.container.visible = value;
+        console.log("HERE", value)}
     mouseUP(retObj:mouseReturnObject) {
-        let DROP = <dropFeature>Display.feature(retObj.display, "dropFeature");
-        if (DROP.o.container) setTimeout(() => {DROP.VISIBLE = false;}, 0);
+        // let DROP = <dropFeature>Display.feature(retObj.display, "dropFeature");
+        // if (DROP.o.container) setTimeout(() => {DROP.VISIBLE = false;console.log("badguy")}, 0);
     }
     mouseMove(retObj:mouseReturnObject) {
         let DROP = <dropFeature>Display.feature(retObj.display, "dropFeature");
@@ -171,8 +174,8 @@ class dropFeature extends Feature {
         if (DROP.o.container && DROP.o.container.visible &&
             dropFeature.activeDrops[dropFeature.activeDrops.length-1] == DROP){
             if (DROP.o.isDrop) {
-                let c=DROP.o.container.o.size;
-                let p=DROP.parent.o.size;
+                // let c=DROP.o.container.o.size;
+                // let p=DROP.parent.o.size;
                 // console.log("Container", c.width, c.height, c.x, c.y, "Parent", p.width, p.height, p.x, p.y, "mouse", e.clientX, e.clientY);
                 if(!DROP.o.container.o.size.isPointIn(e.clientX, e.clientY) &&
                      !DROP.parent.o.size.isPointIn(e.clientX, e.clientY) ){
@@ -180,16 +183,18 @@ class dropFeature extends Feature {
                     dropFeature.activeDrops = dropFeature.activeDrops.slice(0, -1);
                     // console.log("ActiveDrops", dropFeature.activeDrops);
                 }
-            } // else {
-            //     if(!DROP.o.container.o.size.isPointIn(e.clientX, e.clientY) ){
-            //         DROP.o.container.visible = false;
-            //         dropFeature.activeDrops = dropFeature.activeDrops.slice(0, -1);                    
-            //     }                
-            // }
+            }  else {
+                if(!DROP.o.container.o.size.isPointIn(e.clientX, e.clientY)){
+                    console.log("MouseOut");
+                    DROP.VISIBLE = false;
+                    dropFeature.activeDrops = dropFeature.activeDrops.slice(0, -1);
+                }
+            }
         }
     }
 
     static popDrops(){
+        console.log("popDrops");
         for(let i=dropFeature.activeDrops.length-1; i>=0; i--)
             dropFeature.activeDrops[i].VISIBLE = false;
         dropFeature.activeDrops = [];
