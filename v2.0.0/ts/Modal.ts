@@ -12,7 +12,7 @@ interface modalFeatureOptions {
     footer?:string;
 
     features?: Feature[];
-    // children?: Display[];
+    children?: Display[];
 }
 function Modal_(...Arguments:any){
     let root = new modalFeature(...Arguments);
@@ -104,7 +104,7 @@ class modalFeature extends Feature {
             children: "child", // --------------------------------------------------- come back here!
             Coord: "coord",
         },
-        defaults: {label: undefined},
+        defaults: {label: undefined, features:[], children:[]},
     }
     constructor(...Arguments: any) {
         super(...Arguments);
@@ -136,7 +136,7 @@ class modalFeature extends Feature {
         }
         let allDivs = this.allDivs();
         for (let i=0; i < allDivs.length ; i++) {
-            allDivs[i].addFeature( M({mousedown: modalFeature.movetotop}) );
+            allDivs[i].addFeatures( M({mousedown: modalFeature.movetotop}) );
         }
         this.o.child.o.size.copy( this.o.coord );
         Modal_[this.o.label] = F[this.o.label] = this;

@@ -3,13 +3,13 @@
 <style>
 .selected {background-color: lightgray;}
 #right {background-color: lightcyan}
-.blackback {
+.bblue {
     color: white;
-    background-color: black;
+    background-color: blue;
 }
-.blackpoint {
+.bluepoint {
     color: white;
-    background-color: black;
+    background-color: blue;
     cursor: pointer;
 }
 /* div{outline: 1px solid black} */
@@ -37,10 +37,28 @@
 </body>
 </html>
 <script>
+var menuObj = {
+                one:function(){console.log("One")},
+                two:function(){console.log("Two")},
+                three:{four:function(){console.log("Four")}},
+            }
+var menuObj2 = {
+                oneE:function(){console.log("OneE")},
+                twoE:function(){console.log("TwoE")},
+                threeE:{fourE:function(){console.log("FourE")}},
+            }            
 H("Main", 0, 
-    h("Hleft",
-        I("left","left", 200),
-        I("right","right"),
+    v("VertMain",
+        h("Top", "20px", 0,
+            I("File","File", "bluepoint", 50, drop("Drop1", menuObj)),
+            I("Edit","Edit", "bluepoint", 50, drop("Drop2", menuObj2)),
+            I("Space","","bblue", S("Test",{maps:["w"]}))
+        ),
+        I()
+        // h("Hleft",
+        //     I("left","left", 200),
+        //     I("right","right"),
+        // )
     )
 )
 </script>

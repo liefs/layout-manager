@@ -3,13 +3,16 @@ interface spawnFeatureOptions {
     display?: Display;
     maps?:any[]; // of functions or strings
     pixels?: number;
+
+    children?: Display[];
+    features?: Feature[];    
 }
 interface spanMapObj {
     FUNCTION?: Function;
     DISPLAY: Function;
 }
 function S(...Arguments:any){
-    return new spawnFeature(Arguments);
+    return new spawnFeature(...Arguments);
 }
 class spawnFeature extends Feature {
     static pixels = 6;
@@ -30,19 +33,32 @@ class spawnFeature extends Feature {
         },
     }
     
-    static defaults:spawnFeatureOptions = {label: undefined};
-    static argsMap = {
-        string: "label",
+    Arguments:argumentsOptions = {
+        argsMap: {
+            string: "label"
+        },
+        defaults: {label: undefined, children:[], features:[]},
+        options: {typeCheck: itemFeature.typeCheck}
     }
     debugLabel = "(Spawn) S";
     o: spawnFeatureOptions;
+
+    constructor(...Arguments: any) {
+        super(...Arguments);
+        this.argInstance = new argsClass(this, Arguments);
+        Display.featuresAndChildren(this);
+
+        if (this.o.label == undefined) {this.o.label = `spawn_${spawnFeature.namingIndex++}`};
+        S[this.o.label] = F[this.o.label] = this;
+    }
+
     set visible(value:boolean){
         console.log(value);
     }
-    init(THIS_Display: Display):void {
+    init():void {
         let mapObj:spanMapObj|string;
         let label:string = this.o.label;
-        let child:Display, retObj:spanMapObj;
+        let child:Display;
         this.o.display = new Display(this.o.label);
         this.o.display.o.parent = this.parent;
         this.parent.o.children.push( this.o.display );
@@ -63,7 +79,7 @@ class spawnFeature extends Feature {
                 this.o.display.o.children.push( child );
             }
     }
-    onChange(THIS_Display: Display):void {
+    update():void {
         let mapObj:spanMapObj;
         this.o.display.o.size.copy( this.parent.o.size );
         for(let i=0; i< this.o.maps.length; i++) {
@@ -72,9 +88,5 @@ class spawnFeature extends Feature {
                 this.o.display.o.children[i].o.size.copy( mapObj.FUNCTION( this.o.display.o.size  ) );
         }
     }
-    constructor(...Arguments: any) {
-        super(Arguments, spawnFeature.argsMap, spawnFeature.defaults);
-        if (this.o.label == undefined) {this.o.label = `spawn_${spawnFeature.namingIndex++}`};
-        S[this.o.label] = F[this.o.label] = this;
-    }
+
 }

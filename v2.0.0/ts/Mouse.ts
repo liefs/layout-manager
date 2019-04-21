@@ -14,6 +14,7 @@ interface mouseFeatureOptions {
     dragdown?: mouseRF;
     dragmove?: mouseRF;
     dragup?: mouseRF;
+    callback?: Function;
 
     features: Feature[];
     children: Display[];
@@ -107,17 +108,17 @@ class mouseFeature extends Feature {
     //         M:new mouseFeature(),
     //         F:function(o:mouseReturnObject){}
     //     }]}
-static events(el:Element) {
-    let O = mouseFeature.elementObject;
-    for(let key in O) 
-        if (O[key].el == el) return O[key].events;
-    let events:mouseEvents = {}
-    O[el.id] = {el, events};
-    return events;
-}
-static returnObj(e:MouseEvent, MOUSE:mouseFeature): mouseReturnObject{
-    return {event:e, mouse: MOUSE, display: MOUSE.parent, clientX: e.clientX, clientY: e.clientY, deltaX: mouseFeature.delta.x, deltaY: mouseFeature.delta.y};
-}
+    static events(el:Element) {
+        let O = mouseFeature.elementObject;
+        for(let key in O) 
+            if (O[key].el == el) return O[key].events;
+        let events:mouseEvents = {}
+        O[el.id] = {el, events};
+        return events;
+    }
+    static returnObj(e:MouseEvent, MOUSE:mouseFeature): mouseReturnObject{
+        return {event:e, mouse: MOUSE, display: MOUSE.parent, clientX: e.clientX, clientY: e.clientY, deltaX: mouseFeature.delta.x, deltaY: mouseFeature.delta.y};
+    }
     static mousemove:mouseWhere[] = [];
     static mouseup:mouseWhere[] = [];
     Arguments:argumentsOptions = {
@@ -146,6 +147,7 @@ static returnObj(e:MouseEvent, MOUSE:mouseFeature): mouseReturnObject{
 
         if (this.o.label == undefined) {this.o.label = `mouse_${mouseFeature.namingIndex++}`};
         M[this.o.label] = F[this.o.label] = this;
+        // console.log("elementObject", mouseFeature.elementObject);
     }
     elFound(){
         // console.log("Element Found");
@@ -173,10 +175,12 @@ static returnObj(e:MouseEvent, MOUSE:mouseFeature): mouseReturnObject{
             events[eventName] = [];
             if (eventName != "mousemove" && eventName != "mouseup" && !isDrag)
                 this.o.el.addEventListener(eventName, function(e:MouseEvent) {
+                    // console.log(MOUSE.o.label, "Event Name", eventName, events);
                     for(let i=0; i < events[eventName].length; i++){                        
                         mousewhere = events[eventName][i];
                         if (mousewhere.M.parent == undefined || mousewhere.M.parent.visible){
                             mousewhere.F( mouseFeature.returnObj(e, MOUSE) );
+                            // if (MOUSE.o.callback) MOUSE.o.callback(MOUSE);
                             // console.log("PASS", events[eventName][i].M.o.label, events[eventName][i].M);
                         } // else console.log(`FAIL - ${mousewhere.M.parent.o.label}`, events[eventName][i]);
                     }
