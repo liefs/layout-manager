@@ -72,8 +72,6 @@ class dropFeature extends Feature {
                     ((DROP.o.offsetY == -1) ? -height :
                         ((DROP.o.offsetY == 1) ? DISPLAY.o.size.o.height : 0));
         DROP.o.firstCellCoord = Coord.newOrupdate(DROP.o.firstCellCoord, width, height, x, y);
-        // console.log(DISPLAY.o.label, DISPLAY.o.size.o.x, DISPLAY.o.size.o.y, " -firstCellCoord- " , width, height, x, y);
-        // if (DISPLAY.o.parent) console.log("PARENT", DISPLAY.o.parent.o.label);
         dropFeature.onCommon(retObj, DROP);
     }
     static onCommon(retObj:mouseReturnObject, DROP:dropFeature){
@@ -84,7 +82,6 @@ class dropFeature extends Feature {
                 dropFeature.popDrops();
                 
             dropFeature.activeDrops.push(DROP);
-            // console.log("Active Drops", dropFeature.activeDrops);
             DROP.o.container.visible = true;
 
             
@@ -96,7 +93,7 @@ class dropFeature extends Feature {
 
             DROP.o.containerCoord.copy(containerWidth, containerHeight, x, y);
             DROP.o.container.o.size.copy(containerWidth, containerHeight, x, y);
-        } // else console.log("Already Showing");
+        }
     }
     debugLabel = "(drop) drop";
     o: dropFeatureOptions;
@@ -128,7 +125,6 @@ class dropFeature extends Feature {
         if (this.o.el != undefined) this.elFound();
 
         drop[this.o.label] = F[this.o.label] = this;
-        // debugger;
     }
     buildDirection(){
         let t:any;
@@ -147,7 +143,6 @@ class dropFeature extends Feature {
     }
     init():void {
         let DISPLAY: Display = this.parent, DROP = this;
-        // console.log("INIT", DISPLAY, this);
         if (this.o.el == undefined) {
             setTimeout(function(){
                 if (DISPLAY.el) {
@@ -160,33 +155,21 @@ class dropFeature extends Feature {
     }
     update():void {}
     get VISIBLE(){return this.o.container.visible;}
-    set VISIBLE(value:boolean) {
-        // debugger;
-        this.o.container.visible = value;
-        // console.log("HERE", value)}
-    }
-    mouseUP(retObj:mouseReturnObject) {
-        // let DROP = <dropFeature>Display.feature(retObj.display, "dropFeature");
-        // if (DROP.o.container) setTimeout(() => {DROP.VISIBLE = false;console.log("badguy")}, 0);
-    }
+    set VISIBLE(value:boolean) {this.o.container.visible = value;}
+    mouseUP(retObj:mouseReturnObject) {}
     mouseMove(retObj:mouseReturnObject) {
         let DROP = <dropFeature>Display.feature(retObj.display, "dropFeature");
         let e = retObj.event;
         if (DROP.o.container && DROP.o.container.visible &&
             dropFeature.activeDrops[dropFeature.activeDrops.length-1] == DROP){
             if (DROP.o.isDrop) {
-                // let c=DROP.o.container.o.size;
-                // let p=DROP.parent.o.size;
-                // console.log("Container", c.width, c.height, c.x, c.y, "Parent", p.width, p.height, p.x, p.y, "mouse", e.clientX, e.clientY);
-                if(!DROP.o.container.o.size.isPointIn(e.clientX, e.clientY) &&
+               if(!DROP.o.container.o.size.isPointIn(e.clientX, e.clientY) &&
                      !DROP.parent.o.size.isPointIn(e.clientX, e.clientY) ){
                     DROP.VISIBLE = false;
                     dropFeature.activeDrops = dropFeature.activeDrops.slice(0, -1);
-                    // console.log("ActiveDrops", dropFeature.activeDrops);
                 }
             }  else {
                 if(!DROP.o.container.o.size.isPointIn(e.clientX, e.clientY)){
-                    // console.log("MouseOut");
                     DROP.VISIBLE = false;
                     dropFeature.activeDrops = dropFeature.activeDrops.slice(0, -1);
                 }
@@ -195,7 +178,6 @@ class dropFeature extends Feature {
     }
 
     static popDrops(){
-        // console.log("popDrops");
         for(let i=dropFeature.activeDrops.length-1; i>=0; i--)
             dropFeature.activeDrops[i].VISIBLE = false;
         dropFeature.activeDrops = [];
@@ -216,7 +198,6 @@ class dropFeature extends Feature {
             DISPLAY = undefined;
             for(let i=0; i < menuActionArray.length; i++){ // looping possible things menu can do
                 menuAction = menuActionArray[i];
-                // console.log("i",i,""+value);
                 type = itemFeature.typeCheck(menuAction, argsClass.TypeOf(menuAction))
                 if (type == "features") features.push( <Feature>menuAction );
                 if (type == "children") DISPLAY = <Display>menuAction;
