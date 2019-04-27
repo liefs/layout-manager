@@ -11,6 +11,12 @@ interface modalFeatureOptions {
     header?:string;
     footer?:string;
 
+    minWidth: number;
+    minHeight: number;
+    maxWidth: number;
+    maxHeight: number;
+    dragSpawn: string[];
+
     features?: Feature[];
     children?: Display[];
 }
@@ -27,9 +33,9 @@ class modalFeature extends Feature {
     static modalClose = "background-color: red;outline: 1px solid black; color: white;cursor: pointer";
     static modalHeaderHeight = 20;
     static modalFooterHeight = 20;
-    static movetotop(obj:mouseReturnObject){
-        obj.event.preventDefault();
-        let DISPLAY = modalFeature.display(obj.display);
+    static movetotop(mouseRtrnObj:mouseReturnObject){
+        mouseRtrnObj.event.preventDefault();
+        let DISPLAY = modalFeature.display(mouseRtrnObj.display);
         let MODAL:modalFeature = <modalFeature>Display.feature(DISPLAY, "modalFeature");        
         let index = modalFeature.activeModals.indexOf(MODAL);
         let modalfeature: modalFeature;
@@ -47,6 +53,7 @@ class modalFeature extends Feature {
         obj.event.preventDefault();
         let DISPLAY = modalFeature.display(obj.display);
         let MODAL:modalFeature = <modalFeature>Display.feature(DISPLAY, "modalFeature");
+        MODAL.o.coord.copy(DISPLAY.o.size);
         MODAL.isDrag = true;
     }
     static display(DISPLAY:Display) {
@@ -89,13 +96,13 @@ class modalFeature extends Feature {
     isDrag:boolean = false;
 
 
-    allDivs(container = this.o.child){
-        let myList = [];
-        let temp = Display.feature(container, "El_Feature");
-        if (temp != undefined) myList.push( container );
-        for(let i=0; i < container.o.children.length; i++) 
-            myList = myList.concat( this.allDivs(container.o.children[i]) );
-        return myList;
+    allDivsWithEls(containerDisplay = this.o.child){
+        let displaysWithElementsList = [];
+        let ElfInstance = Display.feature(containerDisplay, "El_Feature");
+        if (ElfInstance != undefined) displaysWithElementsList.push( containerDisplay );
+        for(let i=0; i < containerDisplay.o.children.length; i++) 
+            displaysWithElementsList = displaysWithElementsList.concat( this.allDivsWithEls(containerDisplay.o.children[i]) );
+        return displaysWithElementsList;
     }
     Arguments:argumentsOptions = {
         argsMap: {
@@ -104,7 +111,7 @@ class modalFeature extends Feature {
             children: "child", // --------------------------------------------------- come back here!
             Coord: "coord",
         },
-        defaults: {label: undefined, features:[], children:[]},
+        defaults: {label: undefined, features:[], children:[], dragSpawn:["w", "e", "n", "s", "nw", "sw", "ne", "se"], minHeight:150, minWidth:150},
     }
     constructor(...Arguments: any) {
         super(...Arguments);
@@ -134,10 +141,11 @@ class modalFeature extends Feature {
             this.o.child = this.make();
             this.o.child.addFeatures( this );
         }
-        let allDivs = this.allDivs();
-        for (let i=0; i < allDivs.length ; i++) {
-            allDivs[i].addFeatures( M({mousedown: modalFeature.movetotop}) );
+        let allDivsWithEls = this.allDivsWithEls();
+        for (let i=0; i < allDivsWithEls.length ; i++) {
+            allDivsWithEls[i].addFeatures( M({mousedown: modalFeature.movetotop}) );
         }
+        this.o.child.addFeatures( S("MainSpawn", this.o.dragSpawn, {minWidth:this.o.minWidth, minHeight:this.o.minHeight, maxWidth:this.o.maxWidth, maxHeight:this.o.maxHeight}) );
         this.o.child.o.size.copy( this.o.coord );
         Modal_[this.o.label] = F[this.o.label] = this;
     
