@@ -230,18 +230,61 @@ class containerFeature extends Feature {
             defaults: { label: undefined, direction: true, margin: 8, dim: undefined, features: [], children: [] },
             options: { typeCheck: itemFeature.typeCheck }
         };
+        this.tableMode = false;
         this.argInstance = new argsClass(this, Arguments);
         Display.featuresAndChildren(this);
         if (this.o.label == undefined) {
             this.o.label = `container_${containerFeature.namingIndex++}`;
         }
         ;
+        if (Object.keys(C).length == 0) { // on first call...
+            El_Feature.addClass(".Vscroll", "overflow-y: scroll;");
+        }
         this.displayObj = { label: this.o.label };
         C[this.o.label] = F[this.o.label] = this;
         if (this.o.direction)
             h[this.o.label] = this;
         else
             v[this.o.label] = this;
+    }
+    createTable() {
+        if (this.tableMode == false) {
+            this.tableMode = true;
+            let text = "", child, dim, elf, el;
+            text += `<table id="page" width="100%" border="0" cellspacing="0" cellpadding="0">\n`;
+            for (let i = 0; i < this.o.children.length; i++) {
+                child = this.o.children[i];
+                text += `<tr style="height:${(child.dim) ? itemFeature.dimToNumber(child.dim) : 0}px"><td id="${child.o.label}_table"></td></tr>\n`;
+                elf = Display.feature(child, "El_Feature");
+                if (elf) {
+                    elf.class = "llmContainer";
+                    elf.popClass("llmItem");
+                    elf.o.el.style.cssText = "";
+                }
+            }
+            text += `</table></div>\n`;
+            let elem = document.createElement('div');
+            elem.id = `${this.o.label}_tble`;
+            elem.innerHTML = text;
+            document.body.appendChild(elem);
+            for (let i = 0; i < this.o.children.length; i++) {
+                child = this.o.children[i];
+                el = document.getElementById(`${child.o.label}_table`);
+                if (child.el) {
+                    child.el.id += "_";
+                    child.el.style.cssText = `height: ${(child.dim) ? itemFeature.dimToNumber(child.dim) : 0}px`;
+                    el.appendChild(child.el);
+                }
+            }
+            for (let i = 0; i < this.o.children.length; i++) {
+                child = this.o.children[i];
+                el = document.getElementById(`${child.o.label}`);
+                if (el)
+                    el.style.cssText = "visibility: hidden; width:0px;height:0px;left:0px;top:0px";
+            }
+        }
+        this.tableItem = D(`${this.o.label}_tble`, E(`${this.o.label}_tble`, { class: "Vscroll" }));
+        this.tableItem.o.size.copy(this.parent.o.size);
     }
     init() {
         let DISPLAY = this.parent, CONTAINER = this;
@@ -259,46 +302,58 @@ class containerFeature extends Feature {
         let DISPLAY = this.parent;
         let child, feature, found, type, dim;
         let fixed = 0, percent = 0, undef = 0, validChildren = [], children = DISPLAY.o.children;
-        // Determine Valid Children
-        for (let i = 0; i < children.length; i++) {
-            child = children[i];
-            feature = undefined;
-            found = false;
-            for (let j = 0; j < child.o.features.length && !found; j++) {
-                feature = child.o.features[j];
-                if ("dim" in feature.o) {
-                    found = true;
-                    type = (feature.o.dim == undefined) ? "undefined" : (feature.o.dim.endsWith("%")) ? "percent" : "fixed";
-                    if (type == "fixed")
-                        fixed += parseInt(feature.o.dim.slice(0, -2));
-                    if (type == "percent")
-                        percent += parseInt(feature.o.dim.slice(0, -1));
-                    if (type == "undefined")
-                        undef += 1;
-                    validChildren.push({ child, feature, type });
+        if (this.tableMode) {
+            this.tableItem.o.size.copy(DISPLAY.o.size);
+        }
+        else {
+            // Determine Valid Children
+            for (let i = 0; i < children.length; i++) {
+                child = children[i];
+                feature = undefined;
+                found = false;
+                for (let j = 0; j < child.o.features.length && !found; j++) {
+                    feature = child.o.features[j];
+                    if ("dim" in feature.o) {
+                        found = true;
+                        type = (feature.o.dim == undefined) ? "undefined" : (feature.o.dim.endsWith("%")) ? "percent" : "fixed";
+                        if (type == "fixed")
+                            fixed += parseInt(feature.o.dim.slice(0, -2));
+                        if (type == "percent")
+                            percent += parseInt(feature.o.dim.slice(0, -1));
+                        if (type == "undefined")
+                            undef += 1;
+                        validChildren.push({ child, feature, type });
+                    }
                 }
             }
-        }
-        let total = (this.o.direction) ? DISPLAY.o.size.width : DISPLAY.o.size.height;
-        // Calc and Apply
-        let percentPixels = total - fixed - this.o.margin * (validChildren.length - 1);
-        let undefPercent = (undef > 0) ? (100 - percent) / undef : 100 - percent;
-        let runningTotal = 0;
-        let x, y, width, height;
-        // let debugArray = [];
-        for (let i = 0; i < validChildren.length; i++) {
-            child = validChildren[i].child;
-            type = validChildren[i].type;
-            feature = validChildren[i].feature;
-            dim = (type == "fixed") ? parseInt(feature.o.dim.slice(0, -2)) :
-                (type == "percent") ? Math.round((parseInt(feature.o.dim.slice(0, -1)) / 100.0) * percentPixels) :
-                    Math.round((undefPercent / 100.0) * percentPixels);
-            x = (this.o.direction) ? DISPLAY.o.size.x + runningTotal : DISPLAY.o.size.x;
-            y = (this.o.direction) ? DISPLAY.o.size.y : DISPLAY.o.size.y + runningTotal;
-            width = (this.o.direction) ? dim : DISPLAY.o.size.width;
-            height = (this.o.direction) ? DISPLAY.o.size.height : dim;
-            runningTotal += dim + this.o.margin;
-            child.o.size.copy(width, height, x, y);
+            let total = (this.o.direction) ? DISPLAY.o.size.width : DISPLAY.o.size.height;
+            // Calc and Apply
+            //console.log("Total", total, "Fixed", fixed);
+            if (total > 0) {
+                if (fixed > total) {
+                    console.log("Overflow");
+                    this.createTable();
+                }
+            }
+            let percentPixels = total - fixed - this.o.margin * (validChildren.length - 1);
+            let undefPercent = (undef > 0) ? (100 - percent) / undef : 100 - percent;
+            let runningTotal = 0;
+            let x, y, width, height;
+            // let debugArray = [];
+            for (let i = 0; i < validChildren.length; i++) {
+                child = validChildren[i].child;
+                type = validChildren[i].type;
+                feature = validChildren[i].feature;
+                dim = (type == "fixed") ? parseInt(feature.o.dim.slice(0, -2)) :
+                    (type == "percent") ? Math.round((parseInt(feature.o.dim.slice(0, -1)) / 100.0) * percentPixels) :
+                        Math.round((undefPercent / 100.0) * percentPixels);
+                x = (this.o.direction) ? DISPLAY.o.size.x + runningTotal : DISPLAY.o.size.x;
+                y = (this.o.direction) ? DISPLAY.o.size.y : DISPLAY.o.size.y + runningTotal;
+                width = (this.o.direction) ? dim : DISPLAY.o.size.width;
+                height = (this.o.direction) ? DISPLAY.o.size.height : dim;
+                runningTotal += dim + this.o.margin;
+                child.o.size.copy(width, height, x, y);
+            }
         }
     }
     get visible() { return this.parent.o.visible; }
@@ -991,6 +1046,16 @@ class itemFeature extends Feature {
         return (type == "Display") ? "children" : type;
     }
     static dimToString(value) { return (argsClass.TypeOf(value) == "number") ? `${value}px` : value; }
+    static dimToNumber(value) {
+        let type = argsClass.TypeOf(value);
+        if (type == "number")
+            return value;
+        if (type !== "string")
+            return 0;
+        if (value.endsWith("px"))
+            return parseInt(value.slice(0, -2));
+        return 0;
+    }
     init() {
         let DISPLAY = this.parent, ITEM = this;
         DISPLAY.addSetters("dim", {
@@ -1497,22 +1562,59 @@ class spawnFeature extends Feature {
         super(...Arguments);
         this.Arguments = {
             argsMap: {
-                string: "label"
+                string: "label",
+                array: "maps",
+                number: ["minWidth", "minHeight", "maxWidth", "maxHeight"]
             },
-            defaults: { label: undefined, children: [], features: [] },
+            defaults: { label: undefined, children: [], features: [], minHeight: 150, minWidth: 150 },
             options: { typeCheck: itemFeature.typeCheck }
         };
         this.debugLabel = "(Spawn) S";
         this.argInstance = new argsClass(this, Arguments);
         Display.featuresAndChildren(this);
+        if (Object.keys(S).length == 0) { // on first call...
+            El_Feature.addClass(".ew", "cursor: ew-resize");
+            El_Feature.addClass(".ns", "cursor: ns-resize");
+            El_Feature.addClass(".nw", "cursor: nw-resize");
+            El_Feature.addClass(".sw", "cursor: sw-resize");
+        }
+        // if ("array" in this.argInstance.typeObj) this.o.maps = this.argInstance.typeObj.array[0];
         if (this.o.label == undefined) {
             this.o.label = `spawn_${spawnFeature.namingIndex++}`;
         }
         ;
         S[this.o.label] = F[this.o.label] = this;
     }
+    static dragDown(mrObj) {
+        let DISPLAY = mrObj.display;
+        let msDISPLAY = DISPLAY.o.parent;
+        let sourceDisplay = msDISPLAY.o.parent;
+        spawnFeature.startCoord.copy(sourceDisplay.o.size);
+    }
+    static dragUp(e) {
+        // console.log("Up", e);
+        spawnFeature.dragtype = "";
+    }
+    static dragMove(mObj) {
+        mObj.event.preventDefault();
+        let DISPLAY = mObj.display, msDISPLAY = DISPLAY.o.parent, sourceDisplay = msDISPLAY.o.parent;
+        spawnFeature.maps[spawnFeature.dragtype].ONDRAG(sourceDisplay.o.size, mObj);
+    }
+    static validate(spawn, width, height, x, y) {
+        let { width: ssw, height: ssh } = rootFeature.screenSize();
+        if (x < 0 || x + width > ssw ||
+            y < 0 || y + height > ssh ||
+            width < spawn.o.minWidth ||
+            height < spawn.o.minHeight ||
+            ((spawn.o.maxWidth !== undefined) ? width > spawn.o.maxWidth : false))
+            return false;
+        return true;
+    }
     set visible(value) {
-        console.log(value);
+        // console.log(value);
+        let children = this.o.display.o.children;
+        for (let i = 0; i < children.length; i++)
+            children[i].visible = value;
     }
     init() {
         let mapObj;
@@ -1530,7 +1632,7 @@ class spawnFeature extends Feature {
                     mapObj = this.o.maps[i] = spawnFeature.maps[mapObj];
                 }
                 // let FUNCTION = (<spanMapObj>mapObj).FUNCTION;
-                let displayFromFunction = mapObj.DISPLAY;
+                let displayFromFunction = mapObj.MAKEDISPLAY;
                 // new ITEM
                 child = displayFromFunction(label);
                 child.o.parent = this.o.display;
@@ -1542,23 +1644,176 @@ class spawnFeature extends Feature {
         this.o.display.o.size.copy(this.parent.o.size);
         for (let i = 0; i < this.o.maps.length; i++) {
             mapObj = this.o.maps[i];
-            if ("FUNCTION" in mapObj)
-                this.o.display.o.children[i].o.size.copy(mapObj.FUNCTION(this.o.display.o.size));
+            if ("MAPCHILD" in mapObj)
+                mapObj.MAPCHILD(this.o.display.o.size, this.o.display.o.children[i].o.size);
         }
     }
 }
 spawnFeature.pixels = 6;
+spawnFeature.dragtype = "";
+spawnFeature.startCoord = new Coord();
 spawnFeature.maps = {
-    w: { FUNCTION: function (a, pixels = spawnFeature.pixels) {
-            return new Coord(pixels, a.height - 2 * pixels, (a.x - pixels / 2), a.y + pixels);
+    w: {
+        MAPCHILD: function (souceCoord, destCoord, pixels = spawnFeature.pixels) {
+            destCoord.copy(pixels, souceCoord.height - 2 * pixels, (souceCoord.x - pixels / 2), souceCoord.y + pixels);
         },
-        DISPLAY: function (label) {
-            let dragdown = function () { };
-            let dragmove = function () { };
-            let dragup = function () { };
-            return new Display(label, E(label, "", "ew"), M({ label, dragdown, dragmove, dragup }));
+        MAKEDISPLAY: function (label) {
+            return new Display(label, E(label + "_w", "", "ew"), M({ label: label + "_w",
+                dragdown: function (mObj) {
+                    spawnFeature.dragtype = "w";
+                    spawnFeature.dragDown(mObj);
+                },
+                dragmove: spawnFeature.dragMove,
+                dragup: spawnFeature.dragUp }));
+        },
+        ONDRAG: function (sourceCoord, mObj) {
+            let spawn = Display.feature(mObj.display.o.parent.o.parent, "spawnFeature");
+            let dx = mObj.deltaX, { width, height, x, y } = spawnFeature.startCoord;
+            if (spawnFeature.validate(spawn, width - dx, height, x + dx, y))
+                sourceCoord.copy(width - dx, height, x + dx, y);
         }
     },
+    e: {
+        MAPCHILD: function (souceCoord, destCoord, pixels = spawnFeature.pixels) {
+            destCoord.copy(pixels, souceCoord.height - 2 * pixels, (souceCoord.x - pixels / 2 + souceCoord.width), souceCoord.y + pixels);
+        },
+        MAKEDISPLAY: function (label) {
+            return new Display(label, E(label + "_e", "", "ew"), M({ label: label + "_e",
+                dragdown: function (mObj) {
+                    spawnFeature.dragtype = "e";
+                    spawnFeature.dragDown(mObj);
+                },
+                dragmove: spawnFeature.dragMove,
+                dragup: spawnFeature.dragUp }));
+        },
+        ONDRAG: function (sourceCoord, mObj) {
+            let spawn = Display.feature(mObj.display.o.parent.o.parent, "spawnFeature");
+            let dx = mObj.deltaX, { width, height, x, y } = spawnFeature.startCoord;
+            if (spawnFeature.validate(spawn, width + dx, height, x, y))
+                sourceCoord.copy(width + dx, height, x, y);
+        }
+    },
+    n: {
+        MAPCHILD: function (sourceCoord, destCoord, pixels = spawnFeature.pixels) {
+            destCoord.copy(sourceCoord.width - 2 * pixels, pixels, sourceCoord.x + pixels, sourceCoord.y - pixels / 2);
+        },
+        MAKEDISPLAY: function (label) {
+            return new Display(label, E(label + "_n", "", "ns"), M({ label: label + "_n",
+                dragdown: function (mObj) {
+                    spawnFeature.dragtype = "n";
+                    spawnFeature.dragDown(mObj);
+                },
+                dragmove: spawnFeature.dragMove,
+                dragup: spawnFeature.dragUp }));
+        },
+        ONDRAG: function (sourceCoord, mObj) {
+            let spawn = Display.feature(mObj.display.o.parent.o.parent, "spawnFeature");
+            let dy = mObj.deltaY, { width, height, x, y } = spawnFeature.startCoord;
+            if (spawnFeature.validate(spawn, width, height - dy, x, y + dy))
+                sourceCoord.copy(width, height - dy, x, y + dy);
+        }
+    },
+    s: {
+        MAPCHILD: function (sourceCoord, destCoord, pixels = spawnFeature.pixels) {
+            destCoord.copy(sourceCoord.width - 2 * pixels, pixels, sourceCoord.x + pixels, sourceCoord.y - pixels / 2 + sourceCoord.height);
+        },
+        MAKEDISPLAY: function (label) {
+            return new Display(label, E(label + "_s", "", "ns"), M({ label: label + "_s",
+                dragdown: function (mObj) {
+                    spawnFeature.dragtype = "s";
+                    spawnFeature.dragDown(mObj);
+                },
+                dragmove: spawnFeature.dragMove,
+                dragup: spawnFeature.dragUp }));
+        },
+        ONDRAG: function (sourceCoord, mObj) {
+            let spawn = Display.feature(mObj.display.o.parent.o.parent, "spawnFeature");
+            let dy = mObj.deltaY, { width, height, x, y } = spawnFeature.startCoord;
+            if (spawnFeature.validate(spawn, width, height + dy, x, y))
+                sourceCoord.copy(width, height + dy, x, y);
+        }
+    },
+    nw: {
+        MAPCHILD: function (source, destCoord, pixels = spawnFeature.pixels) {
+            destCoord.copy(2 * pixels, 2 * pixels, source.x - pixels / 2, source.y - pixels / 2);
+        },
+        MAKEDISPLAY: function (label) {
+            return new Display(label, E(label + "_nw", "", "nw"), M({ label: label + "_nw",
+                dragdown: function (mObj) {
+                    spawnFeature.dragtype = "nw";
+                    spawnFeature.dragDown(mObj);
+                },
+                dragmove: spawnFeature.dragMove,
+                dragup: spawnFeature.dragUp }));
+        },
+        ONDRAG: function (sourceCoord, mObj) {
+            let spawn = Display.feature(mObj.display.o.parent.o.parent, "spawnFeature");
+            let dx = mObj.deltaX, dy = mObj.deltaY, { width, height, x, y } = spawnFeature.startCoord;
+            if (spawnFeature.validate(spawn, width - dx, height - dy, x + dx, y + dy))
+                sourceCoord.copy(width - dx, height - dy, x + dx, y + dy);
+        }
+    },
+    sw: {
+        MAPCHILD: function (source, destCoord, pixels = spawnFeature.pixels) {
+            destCoord.copy(2 * pixels, 2 * pixels, source.x - pixels / 2, source.y - pixels * 1.5 + source.height);
+        },
+        MAKEDISPLAY: function (label) {
+            return new Display(label, E(label + "_sw", "", "sw"), M({ label: label + "_sw",
+                dragdown: function (mObj) {
+                    spawnFeature.dragtype = "sw";
+                    spawnFeature.dragDown(mObj);
+                },
+                dragmove: spawnFeature.dragMove,
+                dragup: spawnFeature.dragUp }));
+        },
+        ONDRAG: function (sourceCoord, mObj) {
+            let spawn = Display.feature(mObj.display.o.parent.o.parent, "spawnFeature");
+            let dx = mObj.deltaX, dy = mObj.deltaY, { width, height, x, y } = spawnFeature.startCoord;
+            if (spawnFeature.validate(spawn, width - dx, height + dy, x + dx, y))
+                sourceCoord.copy(width - dx, height + dy, x + dx, y);
+        }
+    },
+    ne: {
+        MAPCHILD: function (source, destCoord, pixels = spawnFeature.pixels) {
+            destCoord.copy(2 * pixels, 2 * pixels, source.x + source.width - pixels * 1.5, source.y - pixels * .5);
+        },
+        MAKEDISPLAY: function (label) {
+            return new Display(label, E(label + "_ne", "", "sw"), M({ label: label + "_ne",
+                dragdown: function (mObj) {
+                    spawnFeature.dragtype = "ne";
+                    spawnFeature.dragDown(mObj);
+                },
+                dragmove: spawnFeature.dragMove,
+                dragup: spawnFeature.dragUp }));
+        },
+        ONDRAG: function (sourceCoord, mObj) {
+            let spawn = Display.feature(mObj.display.o.parent.o.parent, "spawnFeature");
+            let dx = mObj.deltaX, dy = mObj.deltaY, { width, height, x, y } = spawnFeature.startCoord;
+            if (spawnFeature.validate(spawn, width + dx, height - dy, x, y + dy))
+                sourceCoord.copy(width + dx, height - dy, x, y + dy);
+        }
+    },
+    se: {
+        MAPCHILD: function (source, destCoord, pixels = spawnFeature.pixels) {
+            destCoord.copy(2 * pixels, 2 * pixels, source.x + source.width - pixels * 1.5, source.y - pixels * 1.5 + source.height);
+        },
+        MAKEDISPLAY: function (label) {
+            return new Display(label, E(label + "_se", "", "nw"), M({ label: label + "_se",
+                dragdown: function (mObj) {
+                    spawnFeature.dragtype = "se";
+                    spawnFeature.dragDown(mObj);
+                },
+                dragmove: spawnFeature.dragMove,
+                dragup: spawnFeature.dragUp }));
+        },
+        ONDRAG: function (sourceCoord, mObj) {
+            let spawn = Display.feature(mObj.display.o.parent.o.parent, "spawnFeature");
+            let dx = mObj.deltaX, dy = mObj.deltaY, { width, height, x, y } = spawnFeature.startCoord;
+            // let spawn = mObj.display
+            if (spawnFeature.validate(spawn, width + dx, height + dy, x, y))
+                sourceCoord.copy(width + dx, height + dy, x, y);
+        }
+    }
 };
 function Modal_(...Arguments) {
     let root = new modalFeature(...Arguments);
@@ -1576,7 +1831,7 @@ class modalFeature extends Feature {
                 children: "child",
                 Coord: "coord",
             },
-            defaults: { label: undefined, features: [], children: [] },
+            defaults: { label: undefined, features: [], children: [], dragSpawn: ["w", "e", "n", "s", "nw", "sw", "ne", "se"], minHeight: 150, minWidth: 150 },
         };
         this.argInstance = new argsClass(this, Arguments);
         Display.featuresAndChildren(this);
@@ -1610,16 +1865,17 @@ class modalFeature extends Feature {
             this.o.child = this.make();
             this.o.child.addFeatures(this);
         }
-        let allDivs = this.allDivs();
-        for (let i = 0; i < allDivs.length; i++) {
-            allDivs[i].addFeatures(M({ mousedown: modalFeature.movetotop }));
+        let allDivsWithEls = this.allDivsWithEls();
+        for (let i = 0; i < allDivsWithEls.length; i++) {
+            allDivsWithEls[i].addFeatures(M({ mousedown: modalFeature.movetotop }));
         }
+        this.o.child.addFeatures(S("MainSpawn", this.o.dragSpawn, { minWidth: this.o.minWidth, minHeight: this.o.minHeight, maxWidth: this.o.maxWidth, maxHeight: this.o.maxHeight }));
         this.o.child.o.size.copy(this.o.coord);
         Modal_[this.o.label] = F[this.o.label] = this;
     }
-    static movetotop(obj) {
-        obj.event.preventDefault();
-        let DISPLAY = modalFeature.display(obj.display);
+    static movetotop(mouseRtrnObj) {
+        mouseRtrnObj.event.preventDefault();
+        let DISPLAY = modalFeature.display(mouseRtrnObj.display);
         let MODAL = Display.feature(DISPLAY, "modalFeature");
         let index = modalFeature.activeModals.indexOf(MODAL);
         let modalfeature;
@@ -1637,6 +1893,7 @@ class modalFeature extends Feature {
         obj.event.preventDefault();
         let DISPLAY = modalFeature.display(obj.display);
         let MODAL = Display.feature(DISPLAY, "modalFeature");
+        MODAL.o.coord.copy(DISPLAY.o.size);
         MODAL.isDrag = true;
     }
     static display(DISPLAY) {
@@ -1676,14 +1933,14 @@ class modalFeature extends Feature {
     static close(obj) {
         modalFeature.display(obj.display).visible = false;
     }
-    allDivs(container = this.o.child) {
-        let myList = [];
-        let temp = Display.feature(container, "El_Feature");
-        if (temp != undefined)
-            myList.push(container);
-        for (let i = 0; i < container.o.children.length; i++)
-            myList = myList.concat(this.allDivs(container.o.children[i]));
-        return myList;
+    allDivsWithEls(containerDisplay = this.o.child) {
+        let displaysWithElementsList = [];
+        let ElfInstance = Display.feature(containerDisplay, "El_Feature");
+        if (ElfInstance != undefined)
+            displaysWithElementsList.push(containerDisplay);
+        for (let i = 0; i < containerDisplay.o.children.length; i++)
+            displaysWithElementsList = displaysWithElementsList.concat(this.allDivsWithEls(containerDisplay.o.children[i]));
+        return displaysWithElementsList;
     }
     init() {
     }
