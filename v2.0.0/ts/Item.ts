@@ -40,6 +40,13 @@ class itemFeature extends Feature {
         return (type == "Display") ? "children" : type;
     }
     static dimToString(value:string|number): string {return (argsClass.TypeOf(value) == "number") ? `${value}px` : <string>value;}
+    static dimToNumber(value:string|number): number {
+        let type = argsClass.TypeOf(value);
+        if (type == "number") return <number>value;
+        if (type !== "string") return 0;
+        if ((<string>value).endsWith("px")) return parseInt( (<string>value).slice(0, -2) );
+        return 0;
+    }
     debugLabel = "(Item) I";
     o: itemFeatureOptions;
     displayObj:Object_Any;
