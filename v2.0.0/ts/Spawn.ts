@@ -265,7 +265,10 @@ class spawnFeature extends Feature {
     }
 
     set visible(value:boolean){
-        console.log(value);
+        // console.log(value);
+        let children = this.o.display.o.children;
+        for(let i=0; i < children.length; i++)
+            children[i].visible = value;
     }
     init():void {
         let mapObj:spanMapObj|string;

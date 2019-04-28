@@ -46,7 +46,7 @@ class containerFeature extends Feature {
         if (this.tableMode == false) {
             this.tableMode = true;
             let text = "", child:Display, dim:number, elf:El_Feature, el:HTMLElement;
-            text += `<div id="${this.o.label}_tble"><table id="page" width="100%" border="0" cellspacing="0" cellpadding="0">\n`;
+            text += `<table id="page" width="100%" border="0" cellspacing="0" cellpadding="0">\n`;
             for(let i=0;  i < this.o.children.length; i++) {
                 child = this.o.children[i];
                 text += `<tr style="height:${(child.dim) ? itemFeature.dimToNumber(child.dim) : 0}px"><td id="${child.o.label}_table"></td></tr>\n`;
@@ -58,7 +58,10 @@ class containerFeature extends Feature {
                 }
             }
             text += `</table></div>\n`;
-            document.body.innerHTML += text;
+            let elem = document.createElement('div');
+            elem.id = `${this.o.label}_tble`;
+            elem.innerHTML = text;
+            document.body.appendChild(elem);
             for(let i=0;  i < this.o.children.length; i++) {
                 child = this.o.children[i];
                 el = document.getElementById(`${child.o.label}_table`);
@@ -71,13 +74,11 @@ class containerFeature extends Feature {
             for(let i=0;  i < this.o.children.length; i++) {
                 child = this.o.children[i];
                 el = document.getElementById(`${child.o.label}`);
-                // console.log("el", el);
                 if (el) el.style.cssText = "visibility: hidden; width:0px;height:0px;left:0px;top:0px";
             }
         }
         this.tableItem = D(`${this.o.label}_tble`, E(`${this.o.label}_tble`,{class: "Vscroll"}));
         this.tableItem.o.size.copy( this.parent.o.size );
-        // console.log(this.tableItem);
     }
     init():void {
         let DISPLAY = this.parent, CONTAINER=this;
