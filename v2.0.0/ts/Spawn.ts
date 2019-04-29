@@ -45,10 +45,10 @@ class spawnFeature extends Feature {
     }
     static maps:spanMapObjObj = {
         w:{
-            MAPCHILD: function(souceCoord:Coord, destCoord:Coord, pixels:number = spawnFeature.pixels){
+            MAPCHILD: function(souceCoord:Coord, destCoord:Coord, DISPLAY:Display, pixels:number = spawnFeature.pixels){
                 destCoord.copy(pixels, souceCoord.height - 2*pixels, (souceCoord.x-pixels/2), souceCoord.y + pixels)
             },
-            MAKEDISPLAY: function(label:string){
+            MAKEDISPLAY: function(label:string, DISPLAY:Display){
                 return new Display(label, E(label+"_w", "", "ew"),
                             M({ label:label+"_w",
                                 dragdown:function(mObj:mouseReturnObject){
@@ -67,10 +67,10 @@ class spawnFeature extends Feature {
             }
         },
         e:{
-            MAPCHILD: function(souceCoord:Coord, destCoord:Coord, pixels:number = spawnFeature.pixels){
+            MAPCHILD: function(souceCoord:Coord, destCoord:Coord, DISPLAY:Display, pixels:number = spawnFeature.pixels){
                 destCoord.copy(pixels, souceCoord.height - 2*pixels, (souceCoord.x-pixels/2+souceCoord.width), souceCoord.y + pixels)
             },
-            MAKEDISPLAY: function(label:string){
+            MAKEDISPLAY: function(label:string, DISPLAY:Display){
                 return new Display(label, E(label+"_e", "", "ew"),
                             M({ label:label+"_e",
                                 dragdown:function(mObj:mouseReturnObject){
@@ -89,10 +89,10 @@ class spawnFeature extends Feature {
             }
         },
         n:{
-            MAPCHILD: function(sourceCoord:Coord, destCoord:Coord, pixels:number = spawnFeature.pixels){
+            MAPCHILD: function(sourceCoord:Coord, destCoord:Coord, DISPLAY:Display, pixels:number = spawnFeature.pixels){
                 destCoord.copy(sourceCoord.width - 2*pixels, pixels, sourceCoord.x+pixels, sourceCoord.y - pixels/2)
             },
-            MAKEDISPLAY: function(label:string){
+            MAKEDISPLAY: function(label:string, DISPLAY:Display){
                 return new Display(label, E(label+"_n", "", "ns"),
                             M({ label:label+"_n",
                                 dragdown:function(mObj:mouseReturnObject){
@@ -111,10 +111,10 @@ class spawnFeature extends Feature {
             }
         },
         s:{
-            MAPCHILD: function(sourceCoord:Coord, destCoord:Coord, pixels:number = spawnFeature.pixels){
+            MAPCHILD: function(sourceCoord:Coord, destCoord:Coord, DISPLAY:Display, pixels:number = spawnFeature.pixels){
                 destCoord.copy(sourceCoord.width - 2*pixels, pixels, sourceCoord.x+pixels, sourceCoord.y - pixels/2 + sourceCoord.height)
             },
-            MAKEDISPLAY: function(label:string){
+            MAKEDISPLAY: function(label:string, DISPLAY:Display){
                 return new Display(label, E(label+"_s", "", "ns"),
                             M({ label:label+"_s",
                                 dragdown:function(mObj:mouseReturnObject){
@@ -133,10 +133,10 @@ class spawnFeature extends Feature {
             }
         },
         nw:{
-            MAPCHILD: function(source:Coord, destCoord:Coord, pixels:number = spawnFeature.pixels){
+            MAPCHILD: function(source:Coord, destCoord:Coord, DISPLAY:Display, pixels:number = spawnFeature.pixels){
                 destCoord.copy(2*pixels, 2*pixels, source.x - pixels/2, source.y-pixels/2)
             },
-            MAKEDISPLAY: function(label:string){
+            MAKEDISPLAY: function(label:string, DISPLAY:Display){
                 return new Display(label, E(label+"_nw", "", "nw"),
                             M({ label:label+"_nw",
                                 dragdown:function(mObj:mouseReturnObject){
@@ -155,10 +155,10 @@ class spawnFeature extends Feature {
             }
         },
         sw:{
-            MAPCHILD: function(source:Coord, destCoord:Coord, pixels:number = spawnFeature.pixels){
+            MAPCHILD: function(source:Coord, destCoord:Coord, DISPLAY:Display, pixels:number = spawnFeature.pixels){
                 destCoord.copy(2*pixels, 2*pixels, source.x - pixels/2, source.y-pixels*1.5 + source.height)
             },
-            MAKEDISPLAY: function(label:string){
+            MAKEDISPLAY: function(label:string, DISPLAY:Display){
                 return new Display(label, E(label+"_sw", "", "sw"),
                             M({ label:label+"_sw",
                                 dragdown:function(mObj:mouseReturnObject){
@@ -177,10 +177,10 @@ class spawnFeature extends Feature {
             }
         },
         ne:{
-            MAPCHILD: function(source:Coord, destCoord:Coord, pixels:number = spawnFeature.pixels){
+            MAPCHILD: function(source:Coord, destCoord:Coord, DISPLAY:Display, pixels:number = spawnFeature.pixels){
                 destCoord.copy(2*pixels, 2*pixels, source.x + source.width - pixels*1.5, source.y-pixels*.5)
             },
-            MAKEDISPLAY: function(label:string){
+            MAKEDISPLAY: function(label:string, DISPLAY:Display){
                 return new Display(label, E(label+"_ne", "", "sw"),
                             M({ label:label+"_ne",
                                 dragdown:function(mObj:mouseReturnObject){
@@ -199,10 +199,10 @@ class spawnFeature extends Feature {
             }
         },
         se:{
-            MAPCHILD: function(source:Coord, destCoord:Coord, pixels:number = spawnFeature.pixels){
+            MAPCHILD: function(source:Coord, destCoord:Coord, DISPLAY:Display, pixels:number = spawnFeature.pixels){
                 destCoord.copy(2*pixels, 2*pixels, source.x + source.width - pixels*1.5, source.y-pixels*1.5 + source.height)
             },
-            MAKEDISPLAY: function(label:string){
+            MAKEDISPLAY: function(label:string, DISPLAY:Display){
                 return new Display(label, E(label+"_se", "", "nw"),
                             M({ label:label+"_se",
                                 dragdown:function(mObj:mouseReturnObject){
@@ -289,18 +289,23 @@ class spawnFeature extends Feature {
                 let displayFromFunction = (<spanMapObj>mapObj).MAKEDISPLAY;
 
                 // new ITEM
-                child = displayFromFunction(label);
-                child.o.parent = this.o.display;
-                this.o.display.o.children.push( child );
+                let THIS = this;
+                setTimeout(() => {
+                    child = displayFromFunction(label, THIS.parent);
+                    child.o.parent = THIS.o.display;
+                    THIS.o.display.o.children.push( child );
+                }, 0);
             }
     }
     update():void {
         let mapObj:spanMapObj;
         this.o.display.o.size.copy( this.parent.o.size );
+        
         for(let i=0; i< this.o.maps.length; i++) {
             mapObj = this.o.maps[i];
-            if ("MAPCHILD" in mapObj)
-                mapObj.MAPCHILD( this.o.display.o.size, this.o.display.o.children[i].o.size);
+            if ("MAPCHILD" in mapObj){
+                mapObj.MAPCHILD( this.o.display.o.size, this.o.display.o.children[i].o.size, this.o.display);
+            }
         }
     }
 

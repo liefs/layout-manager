@@ -42,6 +42,7 @@ class Display {
                     return DISPLAY.o.features[i];
             return undefined;
     }
+    feature(str:string){return Display.feature(this, str);}
     static when(label:string, fn:Function){
         Display.When[label] = fn;
         console.log(`When Added ${label}`, Display.When);

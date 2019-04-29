@@ -27,7 +27,7 @@
         <script src="js/Coord.js"></script>
         <script src="js/Debug.js"></script>
         <script src="js/Mouse.js"></script>
-        <!-- <script src="js/Dragbar.js"></script> -->
+        <script src="js/Dragbar.js"></script>
         <script src="js/Element.js"></script>
         <script src="js/Root.js"></script>
         <script src="js/Item.js"></script>
@@ -60,6 +60,14 @@ var menuObj2 = {
                 twoE:function(){console.log("TwoE")},
                 threeE:{fourE:function(){console.log("FourE")}},
             }
+H("main",
+    h("mainHor",
+        I("left", "left", "400px", db(100,500)),
+        I("right", "right")
+    )
+)
+    
+
 
 // H("Main", 0, 
 //     v("VertMain",

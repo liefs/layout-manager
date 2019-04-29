@@ -19,7 +19,7 @@
         "ts/Item.ts",
         "ts/Container.ts",
         "ts/Mouse.ts",
-        // "ts/Dragbar.ts",
+        "ts/Dragbar.ts",
         "ts/Page.ts",
         "ts/Drop.ts",
         "ts/Spawn.ts",
