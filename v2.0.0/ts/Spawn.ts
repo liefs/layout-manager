@@ -285,9 +285,7 @@ class spawnFeature extends Feature {
                     label = `${this.o.label}_${ (<string>mapObj) }`;
                     mapObj = this.o.maps[i] = spawnFeature.maps[ (<string>mapObj) ];
                 }
-                // let FUNCTION = (<spanMapObj>mapObj).FUNCTION;
                 let displayFromFunction = (<spanMapObj>mapObj).MAKEDISPLAY;
-
                 // new ITEM
                 let THIS = this;
                 setTimeout(() => {
