@@ -120,6 +120,7 @@ class Display {
                 return DISPLAY.o.features[i];
         return undefined;
     }
+    feature(str) { return Display.feature(this, str); }
     static when(label, fn) {
         Display.When[label] = fn;
         console.log(`When Added ${label}`, Display.When);
@@ -1634,9 +1635,12 @@ class spawnFeature extends Feature {
                 // let FUNCTION = (<spanMapObj>mapObj).FUNCTION;
                 let displayFromFunction = mapObj.MAKEDISPLAY;
                 // new ITEM
-                child = displayFromFunction(label);
-                child.o.parent = this.o.display;
-                this.o.display.o.children.push(child);
+                let THIS = this;
+                setTimeout(() => {
+                    child = displayFromFunction(label, THIS.parent);
+                    child.o.parent = THIS.o.display;
+                    THIS.o.display.o.children.push(child);
+                }, 0);
             }
     }
     update() {
@@ -1644,8 +1648,9 @@ class spawnFeature extends Feature {
         this.o.display.o.size.copy(this.parent.o.size);
         for (let i = 0; i < this.o.maps.length; i++) {
             mapObj = this.o.maps[i];
-            if ("MAPCHILD" in mapObj)
-                mapObj.MAPCHILD(this.o.display.o.size, this.o.display.o.children[i].o.size);
+            if ("MAPCHILD" in mapObj) {
+                mapObj.MAPCHILD(this.o.display.o.size, this.o.display.o.children[i].o.size, this.o.display);
+            }
         }
     }
 }
@@ -1654,10 +1659,10 @@ spawnFeature.dragtype = "";
 spawnFeature.startCoord = new Coord();
 spawnFeature.maps = {
     w: {
-        MAPCHILD: function (souceCoord, destCoord, pixels = spawnFeature.pixels) {
+        MAPCHILD: function (souceCoord, destCoord, DISPLAY, pixels = spawnFeature.pixels) {
             destCoord.copy(pixels, souceCoord.height - 2 * pixels, (souceCoord.x - pixels / 2), souceCoord.y + pixels);
         },
-        MAKEDISPLAY: function (label) {
+        MAKEDISPLAY: function (label, DISPLAY) {
             return new Display(label, E(label + "_w", "", "ew"), M({ label: label + "_w",
                 dragdown: function (mObj) {
                     spawnFeature.dragtype = "w";
@@ -1674,10 +1679,10 @@ spawnFeature.maps = {
         }
     },
     e: {
-        MAPCHILD: function (souceCoord, destCoord, pixels = spawnFeature.pixels) {
+        MAPCHILD: function (souceCoord, destCoord, DISPLAY, pixels = spawnFeature.pixels) {
             destCoord.copy(pixels, souceCoord.height - 2 * pixels, (souceCoord.x - pixels / 2 + souceCoord.width), souceCoord.y + pixels);
         },
-        MAKEDISPLAY: function (label) {
+        MAKEDISPLAY: function (label, DISPLAY) {
             return new Display(label, E(label + "_e", "", "ew"), M({ label: label + "_e",
                 dragdown: function (mObj) {
                     spawnFeature.dragtype = "e";
@@ -1694,10 +1699,10 @@ spawnFeature.maps = {
         }
     },
     n: {
-        MAPCHILD: function (sourceCoord, destCoord, pixels = spawnFeature.pixels) {
+        MAPCHILD: function (sourceCoord, destCoord, DISPLAY, pixels = spawnFeature.pixels) {
             destCoord.copy(sourceCoord.width - 2 * pixels, pixels, sourceCoord.x + pixels, sourceCoord.y - pixels / 2);
         },
-        MAKEDISPLAY: function (label) {
+        MAKEDISPLAY: function (label, DISPLAY) {
             return new Display(label, E(label + "_n", "", "ns"), M({ label: label + "_n",
                 dragdown: function (mObj) {
                     spawnFeature.dragtype = "n";
@@ -1714,10 +1719,10 @@ spawnFeature.maps = {
         }
     },
     s: {
-        MAPCHILD: function (sourceCoord, destCoord, pixels = spawnFeature.pixels) {
+        MAPCHILD: function (sourceCoord, destCoord, DISPLAY, pixels = spawnFeature.pixels) {
             destCoord.copy(sourceCoord.width - 2 * pixels, pixels, sourceCoord.x + pixels, sourceCoord.y - pixels / 2 + sourceCoord.height);
         },
-        MAKEDISPLAY: function (label) {
+        MAKEDISPLAY: function (label, DISPLAY) {
             return new Display(label, E(label + "_s", "", "ns"), M({ label: label + "_s",
                 dragdown: function (mObj) {
                     spawnFeature.dragtype = "s";
@@ -1734,10 +1739,10 @@ spawnFeature.maps = {
         }
     },
     nw: {
-        MAPCHILD: function (source, destCoord, pixels = spawnFeature.pixels) {
+        MAPCHILD: function (source, destCoord, DISPLAY, pixels = spawnFeature.pixels) {
             destCoord.copy(2 * pixels, 2 * pixels, source.x - pixels / 2, source.y - pixels / 2);
         },
-        MAKEDISPLAY: function (label) {
+        MAKEDISPLAY: function (label, DISPLAY) {
             return new Display(label, E(label + "_nw", "", "nw"), M({ label: label + "_nw",
                 dragdown: function (mObj) {
                     spawnFeature.dragtype = "nw";
@@ -1754,10 +1759,10 @@ spawnFeature.maps = {
         }
     },
     sw: {
-        MAPCHILD: function (source, destCoord, pixels = spawnFeature.pixels) {
+        MAPCHILD: function (source, destCoord, DISPLAY, pixels = spawnFeature.pixels) {
             destCoord.copy(2 * pixels, 2 * pixels, source.x - pixels / 2, source.y - pixels * 1.5 + source.height);
         },
-        MAKEDISPLAY: function (label) {
+        MAKEDISPLAY: function (label, DISPLAY) {
             return new Display(label, E(label + "_sw", "", "sw"), M({ label: label + "_sw",
                 dragdown: function (mObj) {
                     spawnFeature.dragtype = "sw";
@@ -1774,10 +1779,10 @@ spawnFeature.maps = {
         }
     },
     ne: {
-        MAPCHILD: function (source, destCoord, pixels = spawnFeature.pixels) {
+        MAPCHILD: function (source, destCoord, DISPLAY, pixels = spawnFeature.pixels) {
             destCoord.copy(2 * pixels, 2 * pixels, source.x + source.width - pixels * 1.5, source.y - pixels * .5);
         },
-        MAKEDISPLAY: function (label) {
+        MAKEDISPLAY: function (label, DISPLAY) {
             return new Display(label, E(label + "_ne", "", "sw"), M({ label: label + "_ne",
                 dragdown: function (mObj) {
                     spawnFeature.dragtype = "ne";
@@ -1794,10 +1799,10 @@ spawnFeature.maps = {
         }
     },
     se: {
-        MAPCHILD: function (source, destCoord, pixels = spawnFeature.pixels) {
+        MAPCHILD: function (source, destCoord, DISPLAY, pixels = spawnFeature.pixels) {
             destCoord.copy(2 * pixels, 2 * pixels, source.x + source.width - pixels * 1.5, source.y - pixels * 1.5 + source.height);
         },
-        MAKEDISPLAY: function (label) {
+        MAKEDISPLAY: function (label, DISPLAY) {
             return new Display(label, E(label + "_se", "", "nw"), M({ label: label + "_se",
                 dragdown: function (mObj) {
                     spawnFeature.dragtype = "se";
