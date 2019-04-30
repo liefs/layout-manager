@@ -937,6 +937,8 @@ class rootFeature extends Feature {
             Object.assign(El_Feature.css, El_Feature.styleSheetObject(this.o.css));
             El_Feature.updateCss();
         }
+        rootFeature.event = document.createEvent('Event');
+        rootFeature.event.initEvent('ResizeEvent', true, true);
         H[this.o.label] = F[this.o.label] = this;
     }
     static depth(display, count = 0) { return (display.o.parent != undefined) ? rootFeature.depth(display.o.parent, count + 1) : count; }
@@ -951,6 +953,7 @@ class rootFeature extends Feature {
             Display.rootDisplays[key].move(ss.width - 2 * feature.o.margin, ss.height - 2 * feature.o.margin, feature.o.margin, feature.o.margin);
             rootFeature.handlerNumber++;
         }
+        document.body.dispatchEvent(rootFeature.event);
     }
     static screenSize() {
         let w = window, d = document, e = d.documentElement, g = d.getElementsByTagName('body')[0], width = w.innerWidth || e.clientWidth || g.clientWidth, height = w.innerHeight || e.clientHeight || g.clientHeight;
@@ -1527,8 +1530,8 @@ class dropFeature extends Feature {
                     DISPLAY = menuAction;
                 if (type == "function") {
                     let FUNCTION = menuAction;
-                    let temp = M(key, function () {
-                        FUNCTION();
+                    let temp = M(key, function (mObj) {
+                        FUNCTION(mObj);
                         dropFeature.popDrops();
                     });
                     features.push(temp);

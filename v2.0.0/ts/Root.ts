@@ -28,6 +28,7 @@ class rootFeature extends Feature {
             Display.rootDisplays[key].move(ss.width-2*feature.o.margin, ss.height-2*feature.o.margin, feature.o.margin, feature.o.margin);
             rootFeature.handlerNumber++;           
         }
+        document.body.dispatchEvent(rootFeature.event);
     }
     static screenSize() {
         let w = window, d = document, e = d.documentElement, g = d.getElementsByTagName('body')[0],
@@ -57,8 +58,11 @@ class rootFeature extends Feature {
             Object.assign(El_Feature.css, El_Feature.styleSheetObject(this.o.css));
             El_Feature.updateCss();
         }
+        rootFeature.event = document.createEvent('Event');
+        rootFeature.event.initEvent('ResizeEvent', true, true);
         H[this.o.label] = F[this.o.label] = this;
     }
+    static event:any;
     init():void {
         window.onresize = rootFeature.resizeEvent;
         setTimeout(rootFeature.resizeEvent, 0);

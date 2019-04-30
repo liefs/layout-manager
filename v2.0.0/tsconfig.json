@@ -23,6 +23,8 @@
         "ts/Page.ts",
         "ts/Drop.ts",
         "ts/Spawn.ts",
-        "ts/Modal.ts"
+        "ts/Modal.ts",
+        "ts/Drag.ts",
+        "ts/Designer.ts"
     ]
 }

@@ -203,8 +203,8 @@ class dropFeature extends Feature {
                 if (type == "children") DISPLAY = <Display>menuAction;
                 if (type == "function") {
                     let FUNCTION = menuAction;
-                    let temp = M(key, function(){
-                        FUNCTION();
+                    let temp = M(key, function(mObj:mouseReturnObject){
+                        FUNCTION(mObj);
                         dropFeature.popDrops();
                     })
                     features.push( temp );

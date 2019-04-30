@@ -12,6 +12,9 @@
     background-color: blue;
     cursor: pointer;
 }
+/* .test{
+    background-color:rgb(187, 187, 187);
+} */
 /* .ew {
     background-color: black;
     cursor: ew-resize;
@@ -20,6 +23,7 @@
 </style>
 <head>
         <!-- <script src="js/liefs-args/ts/Args.js"></script>  -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
         <script src="js/Arguments.js"></script>
         <script src="js/Display.js"></script>
         <script src="js/Feature.js"></script>        
@@ -35,6 +39,8 @@
         <script src="js/Drop.js"></script>
         <script src="js/Spawn.js"></script>
         <script src="js/Modal.js"></script>
+        <script src="js/Drag.js"></script>
+        <script src="js/Designer.js"></script>
 </head>
 <body style="overflow: hidden;" >
     <!-- <table id="page" width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -47,6 +53,7 @@
         <td bgcolor="#00FFFF">4</td>
     </tr>
 </table> -->
+
 </body>
 </html>
 <script>
@@ -60,12 +67,13 @@ var menuObj2 = {
                 twoE:function(){console.log("TwoE")},
                 threeE:{fourE:function(){console.log("FourE")}},
             }
-H("main",
-    v("mainHor",
-        I("left", "left"),
-        I("right", "right", "400px", db(100,"500px"))
-    )
-)
+var x=new Designer();
+// H("main",
+//     v("mainHor",
+//         I("left", "left"),
+//         I("right", "right", "400px", db(100,"500px"))
+//     )
+// )
     
 
 
