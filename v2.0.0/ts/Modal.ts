@@ -145,7 +145,7 @@ class modalFeature extends Feature {
         for (let i=0; i < allDivsWithEls.length ; i++) {
             allDivsWithEls[i].addFeatures( M({mousedown: modalFeature.movetotop}) );
         }
-        this.o.child.addFeatures( S("MainSpawn", this.o.dragSpawn, {minWidth:this.o.minWidth, minHeight:this.o.minHeight, maxWidth:this.o.maxWidth, maxHeight:this.o.maxHeight}) );
+        this.o.child.addFeatures( S(this.o.dragSpawn , {minWidth:this.o.minWidth, minHeight:this.o.minHeight, maxWidth:this.o.maxWidth, maxHeight:this.o.maxHeight}) );
         this.o.child.o.size.copy( this.o.coord );
         Modal_[this.o.label] = F[this.o.label] = this;
     

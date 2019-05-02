@@ -282,7 +282,7 @@ class spawnFeature extends Feature {
                 //retObj = this.o.maps[i]
                 mapObj = this.o.maps[i];
                 if (argsClass.TypeOf(mapObj) == "string") {
-                    label = `${this.o.label}_${ (<string>mapObj) }`;
+                    label = `${this.parent.o.label}${this.o.label}_${ (<string>mapObj) }`;
                     mapObj = this.o.maps[i] = spawnFeature.maps[ (<string>mapObj) ];
                 }
                 let displayFromFunction = (<spanMapObj>mapObj).MAKEDISPLAY;
@@ -296,13 +296,17 @@ class spawnFeature extends Feature {
             }
     }
     update():void {
-        let mapObj:spanMapObj;
+        let mapObj:spanMapObj, THIS = this;
         this.o.display.o.size.copy( this.parent.o.size );
         
         for(let i=0; i< this.o.maps.length; i++) {
             mapObj = this.o.maps[i];
             if ("MAPCHILD" in mapObj){
-                mapObj.MAPCHILD( this.o.display.o.size, this.o.display.o.children[i].o.size, this.o.display);
+                if (this.o.display.o.children.length)
+                    mapObj.MAPCHILD( this.o.display.o.size, this.o.display.o.children[i].o.size, this.o.display);
+                else setTimeout(() => {
+                    THIS.update();
+                }, 0);
             }
         }
     }

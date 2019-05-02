@@ -47,10 +47,10 @@ class dropFeature extends Feature {
     }
     static mousetol = 3;
     static activeDrops: dropFeature[] = [];
-    static onContext(retObj:mouseReturnObject){
+    static onContext(retObj:mouseReturnObject, DROP:dropFeature = undefined){
         retObj.event.preventDefault();
         let DISPLAY = retObj.display;
-        let DROP = <dropFeature>Display.feature(DISPLAY, "dropFeature");
+        if (!DROP) DROP = <dropFeature>Display.feature(DISPLAY, "dropFeature");
         let width = DROP.o.width || DISPLAY.o.size.o.width;
         let height = DROP.o.height || DISPLAY.o.size.o.height;
         let x= retObj.clientX - dropFeature.mousetol;
@@ -58,10 +58,10 @@ class dropFeature extends Feature {
         DROP.o.firstCellCoord = Coord.newOrupdate(DROP.o.firstCellCoord, width, height, x, y);
         dropFeature.onCommon(retObj, DROP);
     }
-    static onMouseOver(retObj:mouseReturnObject){
+    static onMouseOver(retObj:mouseReturnObject, DROP:dropFeature = undefined){
         // console.log("MouseOver Fired");
         let DISPLAY = retObj.mouse.parent;
-        let DROP = <dropFeature>Display.feature(DISPLAY, "dropFeature");
+        if (!DROP) DROP = <dropFeature>Display.feature(DISPLAY, "dropFeature");
 
         let width = DROP.o.width || DISPLAY.o.size.o.width;
         let height = DROP.o.height || DISPLAY.o.size.o.height;
@@ -157,8 +157,8 @@ class dropFeature extends Feature {
     get VISIBLE(){return this.o.container.visible;}
     set VISIBLE(value:boolean) {this.o.container.visible = value;}
     mouseUP(retObj:mouseReturnObject) {}
-    mouseMove(retObj:mouseReturnObject) {
-        let DROP = <dropFeature>Display.feature(retObj.display, "dropFeature");
+    mouseMove(retObj:mouseReturnObject, DROP:dropFeature = undefined) {
+        if (!DROP) DROP = <dropFeature>Display.feature(retObj.display, "dropFeature");
         let e = retObj.event;
         if (DROP.o.container && DROP.o.container.visible &&
             dropFeature.activeDrops[dropFeature.activeDrops.length-1] == DROP){

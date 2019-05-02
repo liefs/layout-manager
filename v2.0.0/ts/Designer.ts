@@ -4,6 +4,7 @@ class Designer{
         "split Vertically": function(mObj:mouseReturnObject){Designer.split(mObj, true)},
         "split Horizontally": function(mObj:mouseReturnObject){Designer.split(mObj, false)},
     }
+    static mousemove(mObj:mouseReturnObject){}
     static buildInit(){
 El_Feature.addClass("horTree","color:blue;cursor:pointer;");
 El_Feature.addClass("horTree:hover","color:lightblue;");
@@ -18,7 +19,18 @@ El_Feature.addClass("itemBack","background-color:rgb(180, 240, 165)");
 El_Feature.addClass("itemBackSelected","color:rgb(180, 240, 165);background-color:green;");
 
 
-Designer.root = I("Body","Body", context(Designer.cntx, 200,20));
+let myContext = context(Designer.cntx, 200,20);
+
+let contextFunction = 
+
+Designer.root = I("Body","Body", M({
+    "contextmenu":function(mObj:mouseReturnObject){
+        console.log("Here",mObj);
+        myContext.parent = mObj.display;
+        dropFeature.onContext(mObj, myContext);
+    },
+    "mousemove":function(mObj:mouseReturnObject){Designer.mousemove(mObj)}
+}));
 H("DesignerMain",
     v("VertMain",
         h("TopLine", "30px",
