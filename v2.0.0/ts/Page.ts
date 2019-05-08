@@ -14,7 +14,7 @@ interface pageFeatureOptions {
 
 }
 function P(...Arguments:any){
-    let root = new pageFeature(Arguments);
+    let root = new pageFeature(...Arguments);
     return new Display(root.o.label, root);
 }
 class pageFeature extends Feature {
@@ -37,14 +37,17 @@ class pageFeature extends Feature {
         },
         defaults: {  label: undefined, dim: undefined, prevPage: -1, children: [], features: [],
             currentPage: 0, buttons: [], resolve: pageFeature.resolve},
+        options: {typeCheck: itemFeature.typeCheck}
     }
 
     constructor(...Arguments: any) {
         super(...Arguments);
         this.argInstance = new argsClass(this, Arguments);
         Display.featuresAndChildren(this);
+        console.log("THIS", this);
 
         if (this.o.label == undefined) {this.o.label = `page_${pageFeature.namingIndex++}`};
+        console.log("buttons", this.o.buttons);
         if (this.o.buttons != undefined) this.applyButtons();
 
         P[this.o.label] = F[this.o.label] = this;
@@ -79,6 +82,7 @@ class pageFeature extends Feature {
                 if ("buttons" in PAGE.o)
                     pageFeature.switchClass(PAGE.o.buttons[PAGE.o.prevPage], PAGE.o.tabSelectClass, PAGE.o.tabClass);
             }
+            console.log("retPage", retPage, DISPLAY);
             DISPLAY.o.children[retPage].visible = true;
             if ("buttons" in PAGE.o)
                 pageFeature.switchClass(PAGE.o.buttons[retPage], PAGE.o.tabClass, PAGE.o.tabSelectClass);
