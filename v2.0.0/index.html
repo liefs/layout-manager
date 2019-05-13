@@ -40,65 +40,64 @@
         <script src="js/Spawn.js"></script>
         <script src="js/Modal.js"></script>
         <script src="js/Drag.js"></script>
+        <script src="js/SelectSet.js"></script>
         <script src="js/Designer.js"></script>
-        <script src="js/Docs.js"></script>
+        <!-- <script src="js/Docs.js"></script> -->
 </head>
-<body style="overflow: hidden;" >
-    <!-- <table id="page" width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr style="height:100px;border: black">
-        <td bgcolor="#FF0000">1</td>
-        <td bgcolor="#00FF00">2</td>
-    </tr>
-    <tr style="height:200px;border: black">
-        <td bgcolor="#0000FF">3</td>
-        <td bgcolor="#00FFFF">4</td>
-    </tr>
-</table> -->
-
+<body style="overflow: hidden;" onload="var Des=new Designer">
 </body>
 </html>
 <script>
-// var menuObj = {
-//                 one:function(){console.log("One")},
-//                 two:function(){console.log("Two")},
-//                 three:{four:function(){console.log("Four")}},
-//             }
-// var menuObj2 = {
-//                 oneE:function(){console.log("OneE")},
-//                 twoE:function(){console.log("TwoE")},
-//                 threeE:{fourE:function(){console.log("FourE")}},
-//             }
-// var x=new Designer();
-// H("main",
-//     v("mainHor",
-//         I("left", "left"),
-//         I("right", "right", "400px", db(100,"500px"))
-//     )
-// )
-    
 
 
-// H("Main", 0, 
-//     v("VertMain",
-//         h("Top", "20px", 0,
-//             I("File","File", "bluepoint", 50, drop("Drop1", menuObj)),
-//             I("Edit","Edit", "bluepoint", 50, context("Drop2", menuObj2)),
-//             I("Space","","bblue")
-//         ),
-//         // I()
-//         v("TestVert",0,
-//             I("A","A","100px"),
-//             I("B","B","100px"),
-//             I("C","C","100px"),
-//             I("D","D","100px"),
-//             I("E","E","100px"),
-//             I("F","F","100px"),
-//             I("G","G","100px"),
-//             I("H","H","100px"),
-//             I("I","I","100px"),
-//             I()
-//         )
-//     )
-// )
+
+
+
 
 </script>
+
+
+<!-- 
+
+var menuObj = {
+                    one:function(){console.log("One")},
+                    two:function(){console.log("Two")},
+                    three:{four:function(){console.log("Four")}},
+                }
+    var menuObj2 = {
+                    oneE:function(){console.log("OneE")},
+                    twoE:function(){console.log("TwoE")},
+                    threeE:{fourE:function(){console.log("FourE")}},
+                }
+    var x=new Designer();
+    H("main",
+        v("mainHor",
+            I("left", "left"),
+            I("right", "right", "400px", db(100,"500px"))
+        )
+    )
+        
+    H("Main", 0, 
+        v("VertMain",
+            h("Top", "20px", 0,
+                I("File","File", "bluepoint", 50, drop("Drop1", menuObj)),
+                I("Edit","Edit", "bluepoint", 50, context("Drop2", menuObj2)),
+                I("Space","","bblue")
+            ),
+            // I()
+            v("TestVert",0,
+                I("A","A","100px"),
+                I("B","B","100px"),
+                I("C","C","100px"),
+                I("D","D","100px"),
+                I("E","E","100px"),
+                I("F","F","100px"),
+                I("G","G","100px"),
+                I("H","H","100px"),
+                I("I","I","100px"),
+                I()
+            )
+        )
+    )
+
+-->

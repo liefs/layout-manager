@@ -143,4 +143,10 @@ class Display {
     get tree(){Debug.tree(this);return this;}
     addSetters(label:string, getSetObj:Object_Any) {Object.defineProperty(this, label, getSetObj);}
     move(...args:number[]){this.o.size.copy(...args)}
+    pointInDisplay(x:number, y:number) {
+        return (x >= this.o.size.o.x &&
+             x <= this.o.size.o.x + this.o.size.o.width &&
+            y >= this.o.size.o.y &&
+            y <= this.o.size.o.y + this.o.size.o.height);
+    }
 }

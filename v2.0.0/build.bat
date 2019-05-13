@@ -13,4 +13,6 @@ call type js\Page.js >> dist/llm2.js
 call type js\Drop.js >> dist/llm2.js
 call type js\Spawn.js >> dist/llm2.js
 call type js\Modal.js >> dist/llm2.js
+call type js\SelectSet.js >> dist/llm2.js
+call type js\Designer.js >> dist/llm2.js
 

@@ -25,6 +25,7 @@
         "ts/Spawn.ts",
         "ts/Modal.ts",
         "ts/Drag.ts",
+        "ts/SelectSet.ts",
         "ts/Designer.ts",
         "ts/Docs.ts"
     ]

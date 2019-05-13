@@ -34,7 +34,7 @@ class modalFeature extends Feature {
     static modalHeaderHeight = 20;
     static modalFooterHeight = 20;
     static movetotop(mouseRtrnObj:mouseReturnObject){
-        mouseRtrnObj.event.preventDefault();
+        // mouseRtrnObj.event.preventDefault();
         let DISPLAY = modalFeature.display(mouseRtrnObj.display);
         let MODAL:modalFeature = <modalFeature>Display.feature(DISPLAY, "modalFeature");        
         let index = modalFeature.activeModals.indexOf(MODAL);
@@ -50,7 +50,7 @@ class modalFeature extends Feature {
         }
     }
     static dragdown(obj:mouseReturnObject){
-        obj.event.preventDefault();
+        // obj.event.preventDefault();
         let DISPLAY = modalFeature.display(obj.display);
         let MODAL:modalFeature = <modalFeature>Display.feature(DISPLAY, "modalFeature");
         MODAL.o.coord.copy(DISPLAY.o.size);
@@ -61,7 +61,7 @@ class modalFeature extends Feature {
         return DISPLAY;
     }
     static dragmove(obj:mouseReturnObject){
-        obj.event.preventDefault();
+        // obj.event.preventDefault();
         let DISPLAY = modalFeature.display(obj.display)
         let MODAL:modalFeature = <modalFeature>Display.feature(DISPLAY, "modalFeature");
 
@@ -79,7 +79,7 @@ class modalFeature extends Feature {
         }
     }
     static dragup(obj:mouseReturnObject){
-        obj.event.preventDefault();
+        // obj.event.preventDefault();
         let DISPLAY = modalFeature.display(obj.display);
         let MODAL:modalFeature = <modalFeature>Display.feature(DISPLAY, "modalFeature");
         if (MODAL.isDrag) {
@@ -94,7 +94,15 @@ class modalFeature extends Feature {
     debugLabel = "(Modal) Modal";
     o: modalFeatureOptions;
     isDrag:boolean = false;
-
+    get headHTML() {
+        return <El_Feature>this.o.child.o.children[0].o.children[0].feature("El_Feature");
+    }
+    get bodyHTML() {
+        return <El_Feature>this.o.child.o.children[1].feature("El_Feature");
+    }
+    get footHTML() {
+        return <El_Feature>this.o.child.o.children[2].feature("El_Feature");
+    }
 
     allDivsWithEls(containerDisplay = this.o.child){
         let displaysWithElementsList = [];
